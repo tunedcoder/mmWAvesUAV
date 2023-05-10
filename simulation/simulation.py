@@ -84,7 +84,7 @@ class Simulation():
 
 def mc_simulation(s):
     q = []
-    for i in range(100):
+    for i in range(500):
         for u in s.users:
             # print(s.links[u.id].values())
             # break
