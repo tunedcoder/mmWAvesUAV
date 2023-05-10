@@ -50,7 +50,7 @@ class Simulation():
             links = {}
             for d in self.uavs:
                links[d.id] = "relaible" if check_los(u.position, d.position,self.blockers) else "unreliable"
-            link
+            # links
             self.links[u.id] = links
     
     def _update(self):
