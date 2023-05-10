@@ -1,10 +1,18 @@
 import numpy as np
 from .objects import user, uav, blocker
-from .objects.utils.los import check_los
+from .objects.utils.los import check_pl
 class Simulation():
-    def __init__(self,radius ,n_users, user_height,n_uavs, uav_avg_height, uav_v_height, n_blockers, blocker_height ):
+    def __init__(self,radius ,n_users, user_height,n_uavs, uav_avg_height, uav_v_height, n_blockers, blocker_height,p_threshold= -70):
         self.r = radius
         self.area = np.pi * self.r**2
+
+        self.user_height = user_height
+        self.uav_avg_height = uav_avg_height
+        self.uav_v_height = uav_v_height
+        self.blocker_height = blocker_height
+
+        self.p_threshold = p_threshold
+
         
         if n_users < 1:
             self.n_users = int(n_users *self.area)
@@ -49,7 +57,7 @@ class Simulation():
         for u in self.users:
             links = {}
             for d in self.uavs:
-               links[d.id] = "relaible" if check_los(u.position, d.position,self.blockers) else "unreliable"
+               links[d.id] = "reliable" if check_pl(u.position, d.position,self.blockers) >= self.p_threshold else "unreliable"
             # links
             self.links[u.id] = links
     
@@ -61,7 +69,28 @@ class Simulation():
         for uav in self.uavs:
             uav.update()
 
+    def refresh(self):
+        self.users,self.uavs,self.blockers,self.links = [],[],[],{}
+
+        self._generate_users(self.user_height)
+        self._generate_uavs(self.uav_avg_height, self.uav_v_height)
+        self._generate_blockers(self.blocker_height)
+        self._find_links()
+
     def run_simulation(self):
         self.simulation_alive = True
         while self.simulation_alive:
             self._update()
+
+def mc_simulation(s):
+    q = []
+    for i in range(100):
+        for u in s.users:
+            # print(s.links[u.id].values())
+            # break
+            # print()
+            entry =list(s.links[u.id].values()).count("reliable") / len(s.links[u.id])
+            # print(entry) 
+            q.append(entry)
+        s.refresh()
+    return np.array(q).mean()

@@ -7,5 +7,6 @@ class Blocker():
         self.position = np.array([pos[0][0],pos[1][0],height])
         self.velocity = np.array([get_random_position(1)])
 
+    
     def update(self):
         self.position += self.velocity

@@ -33,3 +33,9 @@ def plot_simulation(s):
         ax.plot([b.position[0],b.position[0]],[b.position[1],b.position[1]],[0,b.position[2]],c='b',linestyle='--')
 
     plt.show()
+
+def plot_reliability(x_values,y_values):
+    plt.plot(x_values,y_values)
+    plt.xlabel("Mean Height of UAVs")
+    plt.ylabel("Reliability")
+    plt.show()
