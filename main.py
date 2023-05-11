@@ -3,7 +3,6 @@ from simulation.simulation import Simulation,mc_simulation
 from simulation.objects.utils.plotting import plot_simulation,plot_reliability
 import config
 def main():
-    
     v = np.linspace(3, 15, 120+1)
     f = []
     for m in v:
