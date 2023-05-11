@@ -1,6 +1,8 @@
 import numpy as np
+import pandas as pd
+import xarray as xr
 from .objects import user, uav, blocker
-from .objects.utils.los import check_pl
+from .objects.utils.los import check_pl,check_los
 class Simulation():
     def __init__(self,radius ,n_users, user_height,n_uavs, uav_avg_height, uav_v_height, n_blockers, blocker_height,p_threshold= -70):
         self.r = radius
@@ -32,7 +34,8 @@ class Simulation():
         self.users = []
         self.uavs = []
         self.blockers = []
-        self.links = {}
+        self.r_links = {}
+        self.b_links = {}
         
         self._generate_users(user_height)
         self._generate_uavs(uav_avg_height, uav_v_height)
@@ -55,11 +58,11 @@ class Simulation():
     
     def _find_links(self):
         for u in self.users:
-            links = {}
-            for d in self.uavs:
-               links[d.id] = "reliable" if check_pl(u.position, d.position,self.blockers) >= self.p_threshold else "unreliable"
-            # links
-            self.links[u.id] = links
+            self.r_links[u.id] = {}
+            self.b_links[u.id] = {}
+            for uav in self.uavs:
+                self.r_links[u.id][uav.id] = check_pl(u.position,uav.position,self.blockers)>=self.p_threshold
+                self.b_links[u.id][uav.id] = check_los(u.position,uav.position,self.blockers)
     
     def _update(self):
         for u in self.users:
@@ -83,14 +86,13 @@ class Simulation():
             self._update()
 
 def mc_simulation(s):
-    q = []
+    # print(l)
+    r,b = [],[]
     for i in range(500):
         for u in s.users:
-            # print(s.links[u.id].values())
-            # break
-            # print()
-            entry =list(s.links[u.id].values()).count("reliable") / len(s.links[u.id])
-            # print(entry) 
-            q.append(entry)
+            # print(s.r_links[u.id],s.b_links[u.id])
+            r.append(sum(s.r_links[u.id].values())/len(s.r_links[u.id]))
+            b.append(sum(s.b_links[u.id].values())/len(s.b_links[u.id]))
         s.refresh()
-    return np.array(q).mean()
+    # print(r)
+    return r,b

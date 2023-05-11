@@ -39,3 +39,9 @@ def plot_reliability(x_values,y_values):
     plt.xlabel("Mean Height of UAVs")
     plt.ylabel("Reliability")
     plt.show()
+
+def plot_blockage(x_values,y_values):
+    plt.plot(x_values,y_values)
+    plt.xlabel("Mean Height of UAVs")
+    plt.ylabel("Blockage")
+    plt.show()
