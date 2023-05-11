@@ -62,7 +62,8 @@ class Simulation():
             self.b_links[u.id] = {}
             for uav in self.uavs:
                 self.r_links[u.id][uav.id] = check_pl(u.position,uav.position,self.blockers)>=self.p_threshold
-                self.b_links[u.id][uav.id] = check_los(u.position,uav.position,self.blockers)
+                self.b_links[u.id][uav.id] = (check_los(u.position,uav.position,self.blockers))==False
+                # print(self.b_links[u.id][uav.id])
     
     def _update(self):
         for u in self.users:
@@ -94,5 +95,5 @@ def mc_simulation(s):
             r.append(sum(s.r_links[u.id].values())/len(s.r_links[u.id]))
             b.append(sum(s.b_links[u.id].values())/len(s.b_links[u.id]))
         s.refresh()
-    # print(r)
-    return r,b
+    # print(b)
+    return np.array(r).mean(),np.array(b).mean()
