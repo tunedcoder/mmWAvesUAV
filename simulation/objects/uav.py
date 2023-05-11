@@ -14,6 +14,6 @@ class UAV():
         self.position += delta
 
     def update(self):
-        self.battery -= config.battery_factor*height
+        self.battery -= config.battery_factor*self.position[2]
         if self.battery <= 0:
             self.working = False
