@@ -17,11 +17,11 @@ def plot_simulation(s):
         ax.scatter(u.position[0],u.position[1],u.position[2],c='k',marker='o')
         # draw a line from (0,0,0) to user height
         ax.plot([0,0],[0,0],[0,u.position[2]],c='k')
-        user_links = s.links[u.id]
+        user_links = s.r_links[u.id]
         print(user_links)
         # break
         for d in user_links:
-            if user_links[d] == "relaible":
+            if user_links[d]:
                 ax.scatter(s.uavs[d].position[0],s.uavs[d].position[1],s.uavs[d].position[2],c='g',marker='o')
                 ax.plot([u.position[0],s.uavs[d].position[0]],[u.position[1],s.uavs[d].position[1]],[u.position[2],s.uavs[d].position[2]],c='g',linestyle='--')
             else:
